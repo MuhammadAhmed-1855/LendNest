@@ -21,3 +21,7 @@
   color: #666;
 
 }
+
+.custom-grid > .MuiGrid-item {
+  margin-right: -8px; /* Adjust this value as needed */
+}

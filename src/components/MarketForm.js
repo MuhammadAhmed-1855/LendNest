@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   FormControl,
   InputLabel,
@@ -42,8 +42,17 @@ const MarketForm = () => {
   const [hasInput, setHasInput] = useState(false);
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
+  const [heading, setHeading] = useState("RULES");
 
   const countryOptions = CountryList().getData();
+
+  useEffect(() => {
+    const timeout = setTimeout(() => {
+      setHeading("MARKET");
+    }, 10000);
+
+    return () => clearTimeout(timeout);
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -134,72 +143,69 @@ const MarketForm = () => {
       className="MarketFormContainer"
     >
       <Grid item xs={6}>
-        {page === 1 && (
-          <form onSubmit={handleSubmit}>
-            <div
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "12px",
+            width: "100%",
+          }}
+        >
+          <Typography
+            variant="h3"
+            style={{
+              display: "flex",
+              fontWeight: "bold",
+              color: "black",
+              justifyContent: "center",
+              marginLeft: "49px",
+              alignItems: "center",
+              animation: "blink 1s infinite",
+            }}
+          >
+            You make the
+            <span
               style={{
                 display: "flex",
-                alignItems: "center",
-                marginBottom: "12px",
-                width: "100%",
+                color: heading === "RULES" ? "#FFEB3B" : "#2196F3",
+                justifyContent: "center",
+                // margin: "auto",
+                padding: "10px",
               }}
             >
-              <Typography
-                variant="h3"
-                style={{
-                  display: "flex",
-                  fontWeight: "bold",
-                  color: "black",
-                  justifyContent: "center",
-                  margin: "auto",
-                  alignItems: "center",
-                  animation: "blink 1s infinite",
-                }}
-              >
-                You make the
-                <span
-                  style={{
-                    display: "flex",
-                    color: "#FFEB3B",
-                    justifyContent: "center",
-                    margin: "auto",
-                    padding: "10px",
-                  }}
-                >
-                  {" "}
-                  RULES
-                </span>
-              </Typography>
-            </div>
-            <div
-              style={{
-                display: "flex",
-                alignItems: "center",
-                marginBottom: "20px",
-                width: "fit-content",
-              }}
-            >
-              <Typography
-                variant="body1"
-                style={{ color: "black", marginRight: "10px" }}
-              >
-                These rules impact the borrower’s experience.
-              </Typography>
-              <Typography variant="body1" style={{ color: "black" }}>
-                All selections made here can be updated in Settings later.
-              </Typography>
-            </div>
-
-            <Grid container spacing={2}>
+              {heading}
+            </span>
+          </Typography>
+        </div>
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            marginBottom: "20px",
+            width: "fit-content",
+          }}
+        >
+          <Typography
+            variant="body1"
+            style={{ color: "black", marginRight: "10px"}}
+          >
+            These rules impact the borrower’s experience.
+          </Typography>
+          <Typography variant="body1" style={{ color: "black" }}>
+            All selections made here can be updated in Settings later.
+          </Typography>
+        </div>
 
 
-
-              <Grid item xs={6}>
+        <form onSubmit={handleSubmit}>
+          {page === 1 && (
+            <Grid container spacing={2} className="custom-grid">
+            <Grid item xs={6}>
                 <FormControl
                   fullWidth
                   variant="outlined"
-                  sx={{ m: 6, minWidth: 200, marginBottom: '1rem' }}
-                  style={{ width: '70%' }}
+                  sx={{ m: 6, minWidth: 200, marginBottom: "1rem" }}
+                  style={{ width: "70%" }}
                 >
                   <InputLabel id="demo-simple-select-label">Country</InputLabel>
                   <Select
@@ -210,12 +216,12 @@ const MarketForm = () => {
                     onChange={(e) => setCountry(e.target.value)}
                     MenuProps={{
                       transformOrigin: {
-                        vertical: 'top',
-                        horizontal: 'left',
+                        vertical: "top",
+                        horizontal: "left",
                       },
                       anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
+                        vertical: "bottom",
+                        horizontal: "left",
                       },
                       getContentAnchorEl: null,
                     }}
@@ -229,8 +235,6 @@ const MarketForm = () => {
                 </FormControl>
               </Grid>
 
-
-
               <Grid item xs={6}>
                 <TextField
                   fullWidth
@@ -243,7 +247,12 @@ const MarketForm = () => {
                 />
               </Grid>
               <Grid item xs={6}>
-                <FormControl fullWidth variant="outlined" margin="normal" style={{ marginBottom: '1rem', width: '70%' }}>
+                <FormControl
+                  fullWidth
+                  variant="outlined"
+                  margin="normal"
+                  style={{ marginBottom: "1rem", width: "70%" }}
+                >
                   <InputLabel>Market Type</InputLabel>
                   <Select
                     label="Market Type"
@@ -251,12 +260,12 @@ const MarketForm = () => {
                     onChange={(e) => setMarketType(e.target.value)}
                     MenuProps={{
                       transformOrigin: {
-                        vertical: 'top',
-                        horizontal: 'left',
+                        vertical: "top",
+                        horizontal: "left",
                       },
                       anchorOrigin: {
-                        vertical: 'bottom',
-                        horizontal: 'left',
+                        vertical: "bottom",
+                        horizontal: "left",
                       },
                       getContentAnchorEl: null,
                     }}
@@ -307,42 +316,22 @@ const MarketForm = () => {
                 />
               </Grid>
             </Grid>
+          )}
 
-            {hasInput && (
-              <Typography variant="body2" color="error">
-                Please fill in all fields.
-              </Typography>
-            )}
 
-            <div style={{ marginTop: "12px" }}>
-              <Button
-                type="button"
-                onClick={handleNext}
-                variant="contained"
-                color="primary"
-                style={{ borderRadius: "30px", padding: "10px 30px" }}
-              >
-                {`Continue ${page} of 4`}
-              </Button>
-              <Button
-                type="button"
-                onClick={handleCancel}
-                variant="outlined"
-                color="default"
-                style={{
-                  borderRadius: "30px",
-                  padding: "10px 30px",
-                  marginLeft: "10px",
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        )}
-        {page === 2 && (
-          <form onSubmit={handleSubmit}>
-            <h2 style={{ fontWeight: "bold" }}>Loan Information</h2>
+
+
+
+
+
+
+
+
+
+
+
+
+          {page === 2 && (
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <TextField
@@ -384,7 +373,7 @@ const MarketForm = () => {
                           setisToolOpen(false);
                         }}
                         onOpen={() => {
-                          console.debug("kkkkkkkk")
+                          console.debug("kkkkkkkk");
                           setisToolOpen(true);
                         }}
                       >
@@ -450,55 +439,9 @@ const MarketForm = () => {
                 />
               </Grid>
             </Grid>
+          )}
 
-            {hasInput && (
-              <Typography variant="body2" color="error">
-                Please fill in all fields.
-              </Typography>
-            )}
-
-            <div style={{ marginTop: "12px" }}>
-              <Button
-                type="button"
-                onClick={handleBack}
-                variant="outlined"
-                color="default"
-                style={{ borderRadius: "30px", padding: "10px 30px" }}
-              >
-                <ArrowBackIcon /> Back
-              </Button>
-              <Button
-                type="button"
-                onClick={handleNext}
-                variant="contained"
-                color="primary"
-                style={{
-                  borderRadius: "30px",
-                  padding: "10px 30px",
-                  marginLeft: "10px",
-                }}
-              >
-                {`Continue ${page} of 4`}
-              </Button>
-              <Button
-                type="button"
-                onClick={handleCancel}
-                variant="outlined"
-                color="default"
-                style={{
-                  borderRadius: "30px",
-                  padding: "10px 30px",
-                  marginLeft: "10px",
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        )}
-        {page === 3 && (
-          <form onSubmit={handleSubmit}>
-            <h2 style={{ fontWeight: "bold" }}>Market Image and Description</h2>
+          {page === 3 && (
             <Grid container spacing={2}>
               <Grid item xs={6}>
                 <div className="upload-container">
@@ -535,14 +478,34 @@ const MarketForm = () => {
                 />
               </Grid>
             </Grid>
+          )}
 
-            {hasInput && (
-              <Typography variant="body2" color="error">
-                Please fill in all fields.
-              </Typography>
-            )}
+          {page === 4 && (
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
+                <h2 style={{ fontWeight: "bold" }}>Terms of Service</h2>
+                <FormControlLabel
+                  control={
+                    <Checkbox
+                      checked={termsAccepted}
+                      onChange={handleTermsAcceptance}
+                      color="primary"
+                    />
+                  }
+                  label="I accept the terms of service."
+                />
+              </Grid>
+            </Grid>
+          )}
 
-            <div style={{ marginTop: "12px" }}>
+          {hasInput && (
+            <Typography variant="body2" color="error">
+              Please fill in all fields.
+            </Typography>
+          )}
+
+          <div style={{ marginTop: "12px" }}>
+            {page > 1 && (
               <Button
                 type="button"
                 onClick={handleBack}
@@ -552,6 +515,8 @@ const MarketForm = () => {
               >
                 <ArrowBackIcon /> Back
               </Button>
+            )}
+            {page < 4 && (
               <Button
                 type="button"
                 onClick={handleNext}
@@ -565,60 +530,8 @@ const MarketForm = () => {
               >
                 {`Continue ${page} of 4`}
               </Button>
-              <Button
-                type="button"
-                onClick={handleCancel}
-                variant="outlined"
-                color="default"
-                style={{
-                  borderRadius: "30px",
-                  padding: "10px 30px",
-                  marginLeft: "10px",
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        )}
-        {page === 4 && (
-          <form onSubmit={handleSubmit}>
-            <h2 style={{ fontWeight: "bold" }}>Terms of Service</h2>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={termsAccepted}
-                  onChange={handleTermsAcceptance}
-                  color="primary"
-                />
-              }
-              label="I accept the terms of service."
-            />
-            {hasInput && (
-              <Typography variant="body2" color="error">
-                Please fill in all fields.
-              </Typography>
             )}
-
-
-
-
-
-
-
-
-
-
-            <div style={{ marginTop: "12px" }}>
-              <Button
-                type="button"
-                onClick={handleBack}
-                variant="outlined"
-                color="default"
-                style={{ borderRadius: "30px", padding: "10px 30px" }}
-              >
-                <ArrowBackIcon /> Back
-              </Button>
+            {page === 4 && (
               <Button
                 type="submit"
                 variant="contained"
@@ -631,22 +544,22 @@ const MarketForm = () => {
               >
                 Submit
               </Button>
-              <Button
-                type="button"
-                onClick={handleCancel}
-                variant="outlined"
-                color="default"
-                style={{
-                  borderRadius: "30px",
-                  padding: "10px 30px",
-                  marginLeft: "10px",
-                }}
-              >
-                Cancel
-              </Button>
-            </div>
-          </form>
-        )}
+            )}
+            <Button
+              type="button"
+              onClick={handleCancel}
+              variant="outlined"
+              color="default"
+              style={{
+                borderRadius: "30px",
+                padding: "10px 30px",
+                marginLeft: "10px",
+              }}
+            >
+              Cancel
+            </Button>
+          </div>
+        </form>
       </Grid>
       <Grid item xs={6}>
         <img
