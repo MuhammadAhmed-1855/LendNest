@@ -15,9 +15,10 @@ import AppLogo from '../../Components/AppLogo';
 import { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { setWalletAddress } from '../../Redux/Features/WalletSlice';
+import { Link } from 'react-router-dom';
 
 
-const pages = ['Create Market', 'Markets', 'My Profile'];
+const pages = ['Create Market', 'Markets'];
 const settings = ['Profile', 'Logout'];
 
 function Navbar() {
@@ -102,42 +103,55 @@ function Navbar() {
             >
               LendNest
             </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
-              <IconButton
-                size="large"
-                aria-label="account of current user"
-                aria-controls="menu-appbar"
-                aria-haspopup="true"
-                onClick={handleOpenNavMenu}
-                color="inherit"
-              >
-                <MenuIcon />
-              </IconButton>
-              <Menu
-                id="menu-appbar"
-                anchorEl={anchorElNav}
-                anchorOrigin={{
-                  vertical: 'bottom',
-                  horizontal: 'left',
-                }}
-                keepMounted
-                transformOrigin={{
-                  vertical: 'top',
-                  horizontal: 'left',
-                }}
-                open={Boolean(anchorElNav)}
-                onClose={handleCloseNavMenu}
-                sx={{
-                  display: { xs: 'block', md: 'none' },
-                }}
-              >
-                {pages.map((page) => (
-                  <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </Box>
+            
+            {walletAddress!==null ? (
+              <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
+                <IconButton
+                  size="large"
+                  aria-label="account of current user"
+                  aria-controls="menu-appbar"
+                  aria-haspopup="true"
+                  onClick={handleOpenNavMenu}
+                  color="inherit"
+                >
+                  <MenuIcon />
+                </IconButton>
+                <Menu
+                  id="menu-appbar"
+                  anchorEl={anchorElNav}
+                  anchorOrigin={{
+                    vertical: 'bottom',
+                    horizontal: 'left',
+                  }}
+                  keepMounted
+                  transformOrigin={{
+                    vertical: 'top',
+                    horizontal: 'left',
+                  }}
+                  open={Boolean(anchorElNav)}
+                  onClose={handleCloseNavMenu}
+                  sx={{
+                    display: { xs: 'block', md: 'none' },
+                  }}
+                >
+                  {pages.map((page) => (
+                    page==='Create Market' ?
+                      <MenuItem key={page} onClick={handleCloseNavMenu}>
+                        <Link to="/create-market" style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <Typography textAlign="center">{page}</Typography>
+                        </Link>
+                      </MenuItem>
+                    :
+                      <MenuItem key={page} onClick={handleCloseNavMenu}>
+                        <Link to="/markets" style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <Typography textAlign="center">{page}</Typography>
+                        </Link>
+                      </MenuItem>
+                  ))}
+                </Menu>
+              </Box>
+            ):(null)}
+
             <AppLogo customSx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
             <Typography
               variant="h5"
@@ -157,20 +171,36 @@ function Navbar() {
             >
               LendNest
             </Typography>
-            <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end' }}>
-              {pages.map((page) => (
-                <Button
-                  key={page}
-                  onClick={handleCloseNavMenu}
-                  sx={{ my: 2, color: 'white', display: 'block' }}
-                >
-                  {page}
-                </Button>
-              ))}
-            </Box>
+
+            {walletAddress!==null ? (
+              <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end' }}>
+                {pages.map((page) => (
+                  page==='Create Market' ?
+                    <Link to="/create-market" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Button
+                        key={page}
+                        onClick={handleCloseNavMenu}
+                        sx={{ my: 2, color: 'white', display: 'block' }}
+                      >
+                        {page}
+                      </Button>
+                    </Link>
+                  :
+                    <Link to="/markets" style={{ textDecoration: 'none', color: 'inherit' }}>
+                      <Button
+                        key={page}
+                        onClick={handleCloseNavMenu}
+                        sx={{ my: 2, color: 'white', display: 'block' }}
+                      >
+                        {page}
+                      </Button>
+                    </Link>
+                ))}
+              </Box>
+            ):(null)}
 
             {walletAddress===null ? (
-              <Box sx={{ flexGrow: 0 }}>
+              <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
               <Tooltip title="Connect Wallet">
                 <IconButton onClick={connectWalletHandler} sx={{ p: 0 }}>
                   <WalletIcon fontSize='large' />
@@ -183,7 +213,7 @@ function Navbar() {
                   <IconButton onClick={handleOpenUserMenu} sx={{ display: { xs: 'none', md: 'flex' }, p: 0, backgroundColor:'#f07872', width:'100px', height:'60px', borderRadius:'50%'}}>
                     {walletAddress.slice(0, 6) + '...'}
                   </IconButton>
-                  <IconButton onClick={handleOpenUserMenu} sx={{ display: { xs: 'flex', md: 'none' }, p: 0, backgroundColor:'#f07872', width:'40px', height:'40px', borderRadius:'50%'}}>
+                  <IconButton onClick={handleOpenUserMenu} sx={{ display: { xs: 'flex', md: 'none' }, p: 0, backgroundColor:'#f07872', width:'70px', height:'40px', borderRadius:'50%'}}>
                     {walletAddress.slice(0, 2) + '..'}
                   </IconButton>
                 </Tooltip>
@@ -210,11 +240,19 @@ function Navbar() {
                         </MenuItem>
                     :
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
-                        <Typography textAlign="center">{setting}</Typography>
+                        <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
+                          <Typography textAlign="center">{setting}</Typography>
+                        </Link>
                       </MenuItem> 
                   ))}
                 </Menu>
               </Box>
+            )}
+
+            {errMsg !== null ? (
+              window.alert(errMsg)
+            ) : (
+              null
             )}
 
           </Toolbar>
