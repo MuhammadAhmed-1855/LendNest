@@ -46,13 +46,21 @@ const MarketForm = () => {
 
   const countryOptions = CountryList().getData();
 
+  const [fade, setFade] = useState(false);
+
   useEffect(() => {
     const interval = setInterval(() => {
-      setHeading(prevHeading => prevHeading === "RULES" ? "MARKET" : "RULES");
-    }, 5000);
+      setFade(true);
+      setTimeout(() => {
+        setHeading((prevHeading) => (prevHeading === "RULES" ? "MARKET" : "RULES"));
+        setFade(false);
+      }, 1000);
+    }, 10000);
 
     return () => clearInterval(interval);
   }, []);
+
+    
 
   const handleSubmit = (e) => {
     e.preventDefault();
