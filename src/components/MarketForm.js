@@ -47,11 +47,11 @@ const MarketForm = () => {
   const countryOptions = CountryList().getData();
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setHeading("MARKET");
-    }, 10000);
+    const interval = setInterval(() => {
+      setHeading(prevHeading => prevHeading === "RULES" ? "MARKET" : "RULES");
+    }, 5000);
 
-    return () => clearTimeout(timeout);
+    return () => clearInterval(interval);
   }, []);
 
   const handleSubmit = (e) => {
@@ -149,6 +149,7 @@ const MarketForm = () => {
             alignItems: "center",
             marginBottom: "12px",
             width: "100%",
+            animation: "fadeInOut 1s infinite",
           }}
         >
           <Typography
@@ -160,7 +161,6 @@ const MarketForm = () => {
               justifyContent: "center",
               marginLeft: "49px",
               alignItems: "center",
-              animation: "blink 1s infinite",
             }}
           >
             You make the
@@ -169,7 +169,6 @@ const MarketForm = () => {
                 display: "flex",
                 color: heading === "RULES" ? "#FFEB3B" : "#2196F3",
                 justifyContent: "center",
-                // margin: "auto",
                 padding: "10px",
               }}
             >
@@ -189,13 +188,12 @@ const MarketForm = () => {
             variant="body1"
             style={{ color: "black", marginRight: "10px"}}
           >
-            These rules impact the borrower’s experience.
+            &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; &nbsp; These rules impact the borrower’s experience.
           </Typography>
           <Typography variant="body1" style={{ color: "black" }}>
             All selections made here can be updated in Settings later.
           </Typography>
         </div>
-
 
         <form onSubmit={handleSubmit}>
           {page === 1 && (
@@ -317,19 +315,6 @@ const MarketForm = () => {
               </Grid>
             </Grid>
           )}
-
-
-
-
-
-
-
-
-
-
-
-
-
 
           {page === 2 && (
             <Grid container spacing={2}>
