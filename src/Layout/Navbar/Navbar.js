@@ -17,6 +17,8 @@ import { useDispatch, useSelector } from 'react-redux';
 import { setWalletAddress } from '../../Redux/Features/WalletSlice';
 import { Link } from 'react-router-dom';
 
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 const pages = ['Create Market', 'Markets'];
 const settings = ['Profile', 'Logout'];
@@ -45,20 +47,31 @@ function Navbar() {
     setAnchorElUser(null);
   };
 
-  const connectWalletHandler = () => {
-    if(window.ethereum) {
-      window.ethereum.request({method: 'eth_requestAccounts'})
-      .then((accounts) => {
-        setAccountHandler(accounts[0]);
-      })
-      .catch((err) => {
-        setErrMsg(err.message);
-      })
+  const connectWalletHandler = async () => {
+    try {
+      
+      if (typeof window.ethereum === 'undefined') {
+        setErrMsg('Ethereum provider not found. Please install MetaMask or another compatible wallet.');
+        return;
+      }
+  
+      const provider = await window.ethereum.enable();
+  
+      if (!provider.length) {
+        setErrMsg('No wallet provider selected.');
+        return;
+      }
+  
+      const selectedAccount = provider[0];
+      
+      console.log(`Connected to wallet with address: ${selectedAccount}`);
+      setAccountHandler(selectedAccount);
+
+    } catch (error) {
+      // Handle errors, such as the user rejecting the connection request
+      setErrMsg(`Error connecting to wallet: ${error.message}`);
     }
-    else {
-      setErrMsg("Please install metamask");
-    }
-  }
+  };
 
   const setAccountHandler = (newAccount) => {
     localStorage.setItem('wallet', newAccount);
@@ -78,10 +91,16 @@ function Navbar() {
     }
   }, [dispatch]);
 
+  useEffect(() => {
+    if (errMsg !== null) {
+      const notify = () => toast.error(errMsg);
+      notify();
+    }
+  }, [errMsg]);
 
   return (
     <>
-      <AppBar position="static">
+      <AppBar position="sticky" style={{  }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <AppLogo customSx={{ display: { xs: 'none', md: 'flex' }, mr: 0 }} />
@@ -248,16 +267,13 @@ function Navbar() {
                 </Menu>
               </Box>
             )}
-
-            {errMsg !== null ? (
-              window.alert(errMsg)
-            ) : (
-              null
-            )}
-
           </Toolbar>
         </Container>
       </AppBar>
+
+      <ToastContainer
+        theme='dark'
+      />
     </>
   );
 }
