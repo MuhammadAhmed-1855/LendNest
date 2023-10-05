@@ -55,7 +55,7 @@ const CreateMarket = () => {
 
   const countryOptions = CountryList().getData();
 
-  const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0'; 
+  const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
 
 
 
@@ -82,25 +82,42 @@ const CreateMarket = () => {
 
 
 
-const alchemyProvider = new AlchemyProvider('goerli', 'FMQYC3_9dZbq_DdfdIW9cCoj0CketQGn'); // Replace with your Alchemy API key
+  const alchemyProvider = new AlchemyProvider('goerli', 'FMQYC3_9dZbq_DdfdIW9cCoj0CketQGn'); // Replace with your Alchemy API key
 
-const contract = new ethers.Contract(contractAddress, contractABI, alchemyProvider);
-
-const readTellerASData = async () => {
-  try {
-    const data = await contract.tellerAS();
-    console.log(data);
-  } catch (error) {
-    console.error('Error:', error);
-  }
-};
-
-const handleSubmit = async (e) => {
-  e.preventDefault();
-  await readTellerASData();
-};
+  const contract = new ethers.Contract(contractAddress, contractABI, alchemyProvider);
 
 
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+
+    try {
+      if (window.ethereum) {
+        const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+        const userAddress = accounts[0];
+
+        // Assuming loanPaymentCycle is available in your component's state or as a variable.
+        const overrides = {
+          gasLimit: 1000000, // Set an appropriate gas limit
+        };
+
+        const provider = new ethers.providers.Web3Provider(window.ethereum);
+        const signer = provider.getSigner();
+        const contractWithSigner = new ethers.Contract(contractAddress, contractABI, signer);
+
+        const tx = await contractWithSigner.closeMarket(loanPaymentCycle, overrides);
+
+        await tx.wait();
+        console.log('Transaction successful');
+        toast.success('Transaction successful', { position: toast.POSITION.TOP_RIGHT });
+      } else {
+        console.error('MetaMask not detected');
+        toast.error('MetaMask not detected', { position: toast.POSITION.TOP_RIGHT });
+      }
+    } catch (error) {
+      console.error('Error:', error);
+      toast.error(`Error: ${error.message}`, { position: toast.POSITION.TOP_RIGHT });
+    }
+  };
 
 
 
