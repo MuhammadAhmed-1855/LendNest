@@ -50,16 +50,11 @@ const CreateMarket = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
   const [heading, setHeading] = useState("RULES");
+  const [loading, setLoading] = useState(false);
   const countryOptions = CountryList().getData();
   
 
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
-
-
-
-
-
-
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -71,25 +66,17 @@ const CreateMarket = () => {
     return () => clearInterval(interval);
   }, []);
 
-
-  // Connect to the Ethereum provider (MetaMask)
   const provider = new ethers.providers.Web3Provider(window.ethereum);
-  
-  // Get the signer (account) from the provider
   const signer = provider.getSigner();
-
-  // Load the contract
   const contract = new ethers.Contract(contractAddress, contractABI, signer);
-
-  
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
+      setLoading(true);
 
       const userAddress = await signer.getAddress();
 
-      // Call the createMarket function
       const txResponse = await contract.createMarket(
         userAddress,
         parseInt(loanPaymentCycle),
@@ -101,21 +88,16 @@ const CreateMarket = () => {
         " "
       );
 
-      // Wait for the transaction to be mined
       await txResponse.wait();
 
-      // Get the transaction receipt
       const receipt = await provider.getTransactionReceipt(txResponse.hash);
 
-      // Check if the transaction was successful
       if (receipt.status === 1) {
-        // Display a success message
         toast.success("Market function called successfully!");
 
-        // Log the return value (if applicable)
         if (receipt.logs.length > 0) {
           const returnValue = ethers.utils.defaultAbiCoder.decode(
-            ['uint256'], // Assuming the return value is a uint256
+            ['uint256'],
             receipt.logs[0].data
           )[0];
           console.log('Return Value:', returnValue);
@@ -126,21 +108,10 @@ const CreateMarket = () => {
     } catch (error) {
       console.error(error);
       toast.error("Error calling market function. Please try again.");
+    } finally {
+      setLoading(false);
     } 
   };
-
-  
-
-
-
-
-
-
-
-
-
-
-
 
   const handleNext = () => {
     if (
@@ -641,11 +612,15 @@ const CreateMarket = () => {
           </DialogActions>
         </Dialog>
       </Grid>
+      {loading && (
+        <div className="loading-popup">
+          <div className="loading-content">
+            <h2>Loading...</h2>
+          </div>
+        </div>
+      )}
     </Layout>
   )
 }
+
 export default CreateMarket;
-
-
-
-
