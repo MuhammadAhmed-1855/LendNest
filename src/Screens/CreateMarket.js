@@ -2,7 +2,6 @@ import { React, useState, useEffect } from "react";
 import { ethers } from "ethers";
 import { toast } from "react-toastify";
 import 'react-toastify/dist/ReactToastify.css';
-import "react-toastify/dist/ReactToastify.css";
 import CountryList from "react-select-country-list";
 import Layout from '../Layout/Layout';
 import InboxIcon from '@mui/icons-material/Inbox';
@@ -29,7 +28,6 @@ import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { DropzoneArea } from "mui-file-dropzone";
 import "./Styles/CreateMarket.css";
 
-import { AlchemyProvider } from "@ethersproject/providers";
 
 import contractABI from './ABI.json'; // Adjust the path as per your project structure
 
@@ -52,6 +50,7 @@ const CreateMarket = () => {
   const [cancelDialogOpen, setCancelDialogOpen] = useState(false);
   const [isToolOpen, setisToolOpen] = useState(false);
   const [heading, setHeading] = useState("RULES");
+
   const countryOptions = CountryList().getData();
 
   const contractAddress = '0xad9ace8a1ea7267dc2ab19bf4b10465d56d5ecf0';
@@ -61,13 +60,10 @@ const CreateMarket = () => {
 
 
 
-
   useEffect(() => {
     const interval = setInterval(() => {
-      setFade(true);
       setTimeout(() => {
         setHeading((prevHeading) => (prevHeading === "RULES" ? "MARKET" : "RULES"));
-        setFade(false);
       }, 1000);
     }, 5000);
 
@@ -75,20 +71,26 @@ const CreateMarket = () => {
   }, []);
 
 
-  // Connect to the Ethereum provider (MetaMask)
-  const provider = new ethers.providers.Web3Provider(window.ethereum);
-  
-  // Get the signer (account) from the provider
-  const signer = provider.getSigner();
 
-  // Load the contract
-  const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
-  
+
+
+
+
+
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
     try {
+      // Connect to the Ethereum provider (MetaMask)
+      const provider = new ethers.providers.Web3Provider(window.ethereum);
+
+      // Get the signer (account) from the provider
+      const signer = provider.getSigner();
+
+      // Load the contract
+      const contract = new ethers.Contract(contractAddress, contractABI, signer);
 
       const userAddress = await signer.getAddress();
 
@@ -107,33 +109,14 @@ const CreateMarket = () => {
       // Wait for the transaction to be mined
       await txResponse.wait();
 
-      // Get the transaction receipt
-      const receipt = await provider.getTransactionReceipt(txResponse.hash);
-
-      // Check if the transaction was successful
-      if (receipt.status === 1) {
-        // Display a success message
-        toast.success("Market function called successfully!");
-
-        // Log the return value (if applicable)
-        if (receipt.logs.length > 0) {
-          const returnValue = ethers.utils.defaultAbiCoder.decode(
-            ['uint256'], // Assuming the return value is a uint256
-            receipt.logs[0].data
-          )[0];
-          console.log('Return Value:', returnValue);
-        }
-      } else {
-        console.error('MetaMask not detected');
-        toast.error('MetaMask not detected', { position: toast.POSITION.TOP_RIGHT });
-      }
+      // Display a success message
+      toast.success("Market function called successfully!");
     } catch (error) {
       console.error(error);
       toast.error("Error calling market function. Please try again.");
-    } 
+    }
   };
 
-  
 
 
 
@@ -645,13 +628,6 @@ const CreateMarket = () => {
           </DialogActions>
         </Dialog>
       </Grid>
-      {loading && (
-        <div className="loading-popup">
-          <div className="loading-content">
-            <h2>Loading...</h2>
-          </div>
-        </div>
-      )}
     </Layout>
   )
 }
