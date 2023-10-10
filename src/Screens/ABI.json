@@ -552,7 +552,70 @@
         "stateMutability": "nonpayable",
         "type": "function"
     },
-    
+    {
+        "inputs": [
+            {
+                "internalType": "address",
+                "name": "_initialOwner",
+                "type": "address"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_paymentCycleDuration",
+                "type": "uint32"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_paymentDefaultDuration",
+                "type": "uint32"
+            },
+            {
+                "internalType": "uint32",
+                "name": "_bidExpirationTime",
+                "type": "uint32"
+            },
+            {
+                "internalType": "uint16",
+                "name": "_feePercent",
+                "type": "uint16"
+            },
+            {
+                "internalType": "bool",
+                "name": "_requireLenderAttestation",
+                "type": "bool"
+            },
+            {
+                "internalType": "bool",
+                "name": "_requireBorrowerAttestation",
+                "type": "bool"
+            },
+            {
+                "internalType": "enum PaymentType",
+                "name": "_paymentType",
+                "type": "uint8"
+            },
+            {
+                "internalType": "enum PaymentCycleType",
+                "name": "_paymentCycleType",
+                "type": "uint8"
+            },
+            {
+                "internalType": "string",
+                "name": "_uri",
+                "type": "string"
+            }
+        ],
+        "name": "createMarket",
+        "outputs": [
+            {
+                "internalType": "uint256",
+                "name": "marketId_",
+                "type": "uint256"
+            }
+        ],
+        "stateMutability": "nonpayable",
+        "type": "function"
+    },
     {
         "inputs": [
             {

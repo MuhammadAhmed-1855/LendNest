@@ -49,21 +49,21 @@ function Navbar() {
 
   const connectWalletHandler = async () => {
     try {
-
+      
       if (typeof window.ethereum === 'undefined') {
         setErrMsg('Ethereum provider not found. Please install MetaMask or another compatible wallet.');
         return;
       }
-
+  
       const provider = await window.ethereum.enable();
-
+  
       if (!provider.length) {
         setErrMsg('No wallet provider selected.');
         return;
       }
-
+  
       const selectedAccount = provider[0];
-
+      
       console.log(`Connected to wallet with address: ${selectedAccount}`);
       setAccountHandler(selectedAccount);
 
@@ -100,7 +100,7 @@ function Navbar() {
 
   return (
     <>
-      <AppBar position="sticky" style={{}}>
+      <AppBar position="sticky" style={{  }}>
         <Container maxWidth="xl">
           <Toolbar disableGutters>
             <AppLogo customSx={{ display: { xs: 'none', md: 'flex' }, mr: 0 }} />
@@ -122,8 +122,8 @@ function Navbar() {
             >
               LendNest
             </Typography>
-
-            {walletAddress !== null ? (
+            
+            {walletAddress!==null ? (
               <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
                   size="large"
@@ -154,13 +154,13 @@ function Navbar() {
                   }}
                 >
                   {pages.map((page) => (
-                    page === 'Create Market' ?
+                    page==='Create Market' ?
                       <MenuItem key={page} onClick={handleCloseNavMenu}>
                         <Link to="/create-market" style={{ textDecoration: 'none', color: 'inherit' }}>
                           <Typography textAlign="center">{page}</Typography>
                         </Link>
                       </MenuItem>
-                      :
+                    :
                       <MenuItem key={page} onClick={handleCloseNavMenu}>
                         <Link to="/markets" style={{ textDecoration: 'none', color: 'inherit' }}>
                           <Typography textAlign="center">{page}</Typography>
@@ -169,7 +169,7 @@ function Navbar() {
                   ))}
                 </Menu>
               </Box>
-            ) : (null)}
+            ):(null)}
 
             <AppLogo customSx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
             <Typography
@@ -191,10 +191,10 @@ function Navbar() {
               LendNest
             </Typography>
 
-            {walletAddress !== null ? (
+            {walletAddress!==null ? (
               <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' }, justifyContent: 'flex-end' }}>
                 {pages.map((page) => (
-                  page === 'Create Market' ?
+                  page==='Create Market' ?
                     <Link to="/create-market" style={{ textDecoration: 'none', color: 'inherit' }}>
                       <Button
                         key={page}
@@ -204,7 +204,7 @@ function Navbar() {
                         {page}
                       </Button>
                     </Link>
-                    :
+                  :
                     <Link to="/markets" style={{ textDecoration: 'none', color: 'inherit' }}>
                       <Button
                         key={page}
@@ -216,23 +216,23 @@ function Navbar() {
                     </Link>
                 ))}
               </Box>
-            ) : (null)}
+            ):(null)}
 
-            {walletAddress === null ? (
+            {walletAddress===null ? (
               <Box sx={{ flexGrow: 1, display: 'flex', justifyContent: 'flex-end' }}>
-                <Tooltip title="Connect Wallet">
-                  <IconButton onClick={connectWalletHandler} sx={{ p: 0 }}>
-                    <WalletIcon fontSize='large' />
-                  </IconButton>
-                </Tooltip>
-              </Box>
-            ) : (
+              <Tooltip title="Connect Wallet">
+                <IconButton onClick={connectWalletHandler} sx={{ p: 0 }}>
+                  <WalletIcon fontSize='large' />
+                </IconButton>
+              </Tooltip>
+            </Box>
+            ):(
               <Box sx={{ flexGrow: 0 }}>
                 <Tooltip title="Open settings">
-                  <IconButton onClick={handleOpenUserMenu} sx={{ display: { xs: 'none', md: 'flex' }, p: 0, backgroundColor: '#f07872', width: '100px', height: '60px', borderRadius: '50%' }}>
+                  <IconButton onClick={handleOpenUserMenu} sx={{ display: { xs: 'none', md: 'flex' }, p: 0, backgroundColor:'#f07872', width:'100px', height:'60px', borderRadius:'50%'}}>
                     {walletAddress.slice(0, 6) + '...'}
                   </IconButton>
-                  <IconButton onClick={handleOpenUserMenu} sx={{ display: { xs: 'flex', md: 'none' }, p: 0, backgroundColor: '#f07872', width: '70px', height: '40px', borderRadius: '50%' }}>
+                  <IconButton onClick={handleOpenUserMenu} sx={{ display: { xs: 'flex', md: 'none' }, p: 0, backgroundColor:'#f07872', width:'70px', height:'40px', borderRadius:'50%'}}>
                     {walletAddress.slice(0, 2) + '..'}
                   </IconButton>
                 </Tooltip>
@@ -253,16 +253,16 @@ function Navbar() {
                   onClose={handleCloseUserMenu}
                 >
                   {settings.map((setting) => (
-                    setting === 'Logout' ?
-                      <MenuItem key={setting} onClick={disconnectWalletHandler}>
-                        <Typography textAlign="center">{setting}</Typography>
-                      </MenuItem>
-                      :
+                    setting==='Logout' ?
+                        <MenuItem key={setting} onClick={disconnectWalletHandler}>
+                          <Typography textAlign="center">{setting}</Typography>
+                        </MenuItem>
+                    :
                       <MenuItem key={setting} onClick={handleCloseUserMenu}>
                         <Link to="/profile" style={{ textDecoration: 'none', color: 'inherit' }}>
                           <Typography textAlign="center">{setting}</Typography>
                         </Link>
-                      </MenuItem>
+                      </MenuItem> 
                   ))}
                 </Menu>
               </Box>
